@@ -25,8 +25,12 @@ if (contactForm) {
         };
 
         try {
-            // Send data to n8n webhook
-            const response = await fetch(this.action, {
+            // Create a proxy URL to handle CORS
+            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+            const webhookUrl = this.action;
+            
+            // Send data to n8n webhook through proxy
+            const response = await fetch(proxyUrl + webhookUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -43,6 +47,8 @@ if (contactForm) {
         } catch (error) {
             console.error('Error submitting form:', error);
             alert('There was an error submitting your message. Please try again later.');
+            // Also log the error to the console for debugging
+            console.error('Error details:', error.message);
         }
     });
 }
