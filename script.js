@@ -11,7 +11,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // Form submission handling
 const contactForm = document.getElementById('contactForm');
 if (contactForm) {
-    contactForm.addEventListener('submit', async function(e) {
+    contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
         // Get form data
@@ -24,32 +24,31 @@ if (contactForm) {
             source: 'website_contact_form'
         };
 
-        try {
-            // Create a proxy URL to handle CORS
-            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-            const webhookUrl = this.action;
-            
-            // Send data to n8n webhook through proxy
-            const response = await fetch(proxyUrl + webhookUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-
-            if (response.ok) {
-                alert('Thank you for your message! We will get back to you soon.');
-                this.reset();
+        // Create a new XMLHttpRequest
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', this.action, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        
+        xhr.onload = function() {
+            console.log('Response:', xhr.responseText);
+            if (xhr.status === 200) {
+                const formData = new FormData(contactForm);
+                const name = formData.get('name');
+                alert(`Thank you ${name}!\n\nIf you don\'t receive a confirmation email within a few minutes, please submit another response with a different email address.`);
+                contactForm.reset();
             } else {
-                throw new Error('Failed to submit the form');
+                alert('There was an error submitting your message. Please try again later.');
+                console.error('Form submission failed:', xhr.responseText);
             }
-        } catch (error) {
-            console.error('Error submitting form:', error);
+        };
+
+        xhr.onerror = function() {
             alert('There was an error submitting your message. Please try again later.');
-            // Also log the error to the console for debugging
-            console.error('Error details:', error.message);
-        }
+            console.error('Network error occurred');
+        };
+
+        // Send the data
+        xhr.send(JSON.stringify(data));
     });
 }
 
