@@ -11,11 +11,39 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // Form submission handling
 const contactForm = document.getElementById('contactForm');
 if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
+    contactForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        // Here you would typically send the form data to your server
-        alert('Thank you for your message! We will get back to you soon.');
-        this.reset();
+        
+        // Get form data
+        const formData = new FormData(this);
+        const data = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            message: formData.get('message'),
+            timestamp: new Date().toISOString(),
+            source: 'website_contact_form'
+        };
+
+        try {
+            // Send data to n8n webhook
+            const response = await fetch(this.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                alert('Thank you for your message! We will get back to you soon.');
+                this.reset();
+            } else {
+                throw new Error('Failed to submit the form');
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            alert('There was an error submitting your message. Please try again later.');
+        }
     });
 }
 
