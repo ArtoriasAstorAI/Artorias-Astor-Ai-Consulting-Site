@@ -16,11 +16,14 @@ if (contactForm) {
         
         // Get form data
         const formData = new FormData(this);
+        const now = new Date();
         const data = {
             name: formData.get('name'),
             email: formData.get('email'),
             message: formData.get('message'),
-            timestamp: new Date().toISOString(),
+            timestamp: now.toISOString(),
+            date: now.toLocaleDateString(),
+            time: now.toLocaleTimeString(),
             source: 'website_contact_form'
         };
 
