@@ -82,8 +82,15 @@
                 <input type="email" name="email" placeholder="Your Email" required>
                 <textarea name="message" placeholder="Your Message" required></textarea>
                 <div class="phone-field">
-                    <input type="tel" name="phone" placeholder="Your Phone Number" pattern="[0-9]{10}" required>
-                    <p class="disclaimer">* By entering your phone number, you agree to receive text messages from Artorias Astor AI Consulting regarding your consultation and related updates. Message & data rates may apply. Reply STOP to unsubscribe.</p>
+                    <input type="tel" name="phone" placeholder="Phone Number - Optional" pattern="[0-9]{10}" id="phone">
+                    <p class="disclaimer">
+                        * By entering your phone number, you agree to receive text messages from Artorias Astor AI Consulting regarding your consultation and related updates. Message & data rates may apply. Reply STOP to unsubscribe.
+                        <br>
+                        <label class="terms-label">
+                            <input type="checkbox" name="terms" id="terms" style="margin-right: 5px;">
+                            I agree to the terms above
+                        </label>
+                    </p>
                 </div>
                 <button type="submit" class="submit-button">Send Message</button>
             </form>
