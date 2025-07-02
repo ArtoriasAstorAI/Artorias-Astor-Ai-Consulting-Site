@@ -11,9 +11,18 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // Form submission handling
 const contactForm = document.getElementById('contactForm');
 if (contactForm) {
+    const phoneInput = document.getElementById('phone');
+    const termsCheckbox = document.getElementById('terms');
+    
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
+        // Check if phone number is entered and terms are not accepted
+        if (phoneInput.value && !termsCheckbox.checked) {
+            alert('Please accept the terms above to submit your phone number.');
+            return;
+        }
+
         // Get form data
         const formData = new FormData(this);
         const now = new Date();
@@ -36,9 +45,7 @@ if (contactForm) {
         xhr.onload = function() {
             console.log('Response:', xhr.responseText);
             if (xhr.status === 200) {
-                const formData = new FormData(contactForm);
-                const name = formData.get('name');
-                alert(`Thank you ${name}!\n\nIf you don\'t receive a confirmation email within a few minutes, please submit another response with a different email address.`);
+                alert(`Thank you ${data.name}!\n\nIf you don\'t receive a confirmation email within a few minutes, please submit another response with a different email address.`);
                 contactForm.reset();
             } else {
                 alert('There was an error submitting your message. Please try again later.');
